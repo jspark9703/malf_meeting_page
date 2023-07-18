@@ -1,5 +1,6 @@
 import '../data/json_data.dart';
 import '../network/network.dart';
+import '../screens/sliding_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -25,7 +26,7 @@ class _MeetingPageState extends State<MeetingPage> {
       });
     });
 
-    print(_jsonData[0]);
+    print(_jsonData);
   }
 
   Widget build(BuildContext context) {
@@ -52,7 +53,7 @@ class _MeetingPageState extends State<MeetingPage> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 alignment: Alignment.topLeft,
-                image: AssetImage('assets/v.jpg'),
+                image: AssetImage('assets/1689420712322-431438052.jpg'),
                 fit: BoxFit.fitWidth,
               ),
             ),
@@ -64,7 +65,7 @@ class _MeetingPageState extends State<MeetingPage> {
           maxHeight: MediaQuery.of(context).size.height,
           panelBuilder: (sc) => PanelWidget(
             controller: sc,
-            meetingData: _jsonData[0],
+            meetingData: _jsonData,
           ),
           collapsed: Container(
             decoration: BoxDecoration(
@@ -75,16 +76,47 @@ class _MeetingPageState extends State<MeetingPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // 좋아요 버튼 기능 구현
-                  },
-                  icon: Icon(Icons.thumb_up),
-                  label: Text('좋아요'),
+                Column(
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        if (_jsonData[0].likeCheck == 0) {
+                          setState(() {
+                            _jsonData[0].likeCheck = 1;
+                          });
+                        } else if (_jsonData[0].likeCheck == 1) {
+                          setState(() {
+                            _jsonData[0].likeCheck = 0;
+                          });
+                        }
+                        Network.postinfo({
+                          "like_check": _jsonData[0].likeCheck,
+                          "participation_status":
+                              _jsonData[0].participantionStatus
+                        });
+                      },
+                      icon: Icon(Icons.thumb_up),
+                      style: ButtonStyle(),
+                      label:
+                          Column(children: [Text("${_jsonData[0].likeCount}")]),
+                    ),
+                  ],
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // 참여하기 버튼 기능 구현
+                    if (_jsonData[0].participantionStatus == 0) {
+                      setState(() {
+                        _jsonData[0].participantionStatus = 1;
+                      });
+                    } else if (_jsonData[0].participantionStatus == 1) {
+                      setState(() {
+                        _jsonData[0].participantionStatus = 0;
+                      });
+                    }
+                    Network.postinfo({
+                      "like_check": _jsonData[0].likeCheck,
+                      "participation_status": _jsonData[0].participantionStatus
+                    });
                   },
                   child: Text('참여하기'),
                 ),
@@ -95,124 +127,139 @@ class _MeetingPageState extends State<MeetingPage> {
   }
 }
 
-// ignore: must_be_immutable
-class PanelWidget extends StatefulWidget {
-  final ScrollController controller;
-  MeetingData meetingData;
-  PanelWidget({Key? key, required this.controller, required this.meetingData})
-      : super(key: key);
+// // ignore: must_be_immutable
+// class PanelWidget extends StatefulWidget {
+//   final ScrollController controller;
+//   List<MeetingData> meetingData;
 
-  @override
-  State<PanelWidget> createState() => _PanelWidgetState();
-}
+//   String removeExtension(String fileName) {
+//     int dotIndex = fileName.lastIndexOf('.');
+//     if (dotIndex != -1) {
+//       return fileName.substring(0, dotIndex);
+//     } else {
+//       return fileName;
+//     }
+//   }
 
-class _PanelWidgetState extends State<PanelWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            children: [
-              Text("${widget.meetingData.authorNickname}"),
-              Text('context'),
-              Column(
-                children: [
-                  ListTile(
-                    leading: Container(
-                      width: 60,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(Icons.location_searching_sharp),
-                          Text('data'),
-                        ],
-                      ),
-                    ),
-                    horizontalTitleGap: 20,
-                    title: Text('종로삼가'),
-                  ),
-                  ListTile(
-                    leading: Container(
-                      width: 60,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(Icons.location_searching_sharp),
-                          Text('data'),
-                        ],
-                      ),
-                    ),
-                    horizontalTitleGap: 20,
-                    title: Text('종로삼가'),
-                  ),
-                  ListTile(
-                    leading: Container(
-                      width: 60,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(Icons.location_searching_sharp),
-                          Text('data'),
-                        ],
-                      ),
-                    ),
-                    horizontalTitleGap: 20,
-                    title: Text('종로삼가'),
-                  ),
-                  ListTile(
-                    leading: Container(
-                      width: 60,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(Icons.location_searching_sharp),
-                          Text('data'),
-                        ],
-                      ),
-                    ),
-                    horizontalTitleGap: 20,
-                    title: Text('종로삼가'),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(8),
-          child: Row(
-            children: [
-              CircleAvatar(),
-              Column(
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    child: Text('data'),
-                  ),
-                  Row(
-                    children: [
-                      Text('이름'),
-                      Icon(Icons.abc),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(8),
-          child: Text(
-            "내용ㅁㅇㄶㅇㅁㄶㄴㅁㅇㅎㅁㄴㅇㅎㄻㄴㅇㅎㅁㄴㅇㅎㄴㅇㅎㅁㄴdsagajdsklsdglkㅁㄴ아ㅓㅎㅁㅇ노ㅗㄴ외ㅚㅣㅘㅣㅘㅘㅎㄴㅇㅁㄹ",
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(8),
-          child: Image(image: AssetImage("assets/v.jpg")),
-        ),
-      ],
-    );
-  }
-}
+//   PanelWidget({Key? key, required this.controller, required this.meetingData})
+//       : super(key: key);
+
+//   @override
+//   State<PanelWidget> createState() => _PanelWidgetState();
+// }
+
+// class _PanelWidgetState extends State<PanelWidget> {
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListView(
+//       children: [
+//         Padding(
+//           padding: const EdgeInsets.all(10.0),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Text(
+//                 "투어",
+//                 textAlign: TextAlign.left,
+//               ),
+//               Text(
+//                 "${widget.meetingData[0].title}",
+//                 textScaleFactor: 1.5,
+//               ),
+//               Column(
+//                 children: [
+//                   ListTile(
+//                     leading: Container(
+//                       width: 60,
+//                       child: Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                         children: [
+//                           Icon(Icons.location_searching_sharp),
+//                           Text('장소'),
+//                         ],
+//                       ),
+//                     ),
+//                     horizontalTitleGap: 20,
+//                     title: Text('"${widget.meetingData[0].meetingLocation}"'),
+//                   ),
+//                   ListTile(
+//                     leading: Container(
+//                       width: 60,
+//                       child: Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                         children: [
+//                           Icon(Icons.location_searching_sharp),
+//                           Text('날짜'),
+//                         ],
+//                       ),
+//                     ),
+//                     horizontalTitleGap: 20,
+//                     title: Text("${widget.meetingData[0].meetingStartTime}"),
+//                   ),
+//                   ListTile(
+//                     leading: Container(
+//                       width: 60,
+//                       child: Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                         children: [
+//                           Icon(Icons.location_searching_sharp),
+//                           Text('인원'),
+//                         ],
+//                       ),
+//                     ),
+//                     horizontalTitleGap: 20,
+//                     title: Text("${widget.meetingData[0].meetingCapacity}"),
+//                   ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//         ),
+//         Padding(
+//           padding: EdgeInsets.all(8),
+//           child: Row(
+//             children: [
+//               CircleAvatar(
+//                   backgroundImage: NetworkImage(
+//                       "http://3.36.185.179:8000/${widget.meetingData[0].authorPicture}")),
+//               Column(
+//                 children: [
+//                   TextButton(
+//                     onPressed: () {},
+//                     child: Text(
+//                         widget.meetingData[0].userType == 1 ? "현지인" : "여행객"),
+//                   ),
+//                   Row(
+//                     children: [
+//                       Text("${widget.meetingData[0].authorNickname}"),
+//                       SizedBox(
+//                         width: 10.0,
+//                       ),
+//                       Text("${widget.meetingData[0].authorNation}"),
+//                     ],
+//                   ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//         ),
+//         Padding(
+//           padding: EdgeInsets.all(8),
+//           child: Text(
+//             "${widget.meetingData[0].content}",
+//           ),
+//         ),
+//         Padding(
+//           padding: EdgeInsets.all(8),
+//           child: Image(image: AssetImage("assets/1689420712322-431438052.jpg")),
+//         ),
+//       ],
+//     );
+//   }
+// }

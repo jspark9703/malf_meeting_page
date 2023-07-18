@@ -3,6 +3,7 @@ import 'dart:convert';
 JsonData jsonDataFromJson(String str) => JsonData.fromJson(json.decode(str));
 
 String jsonDataToJson(JsonData data) => json.encode(data.toJson());
+String meetingDataToJson(MeetingData data) => json.encode(data.toJson());
 
 class JsonData {
   String status;
@@ -76,18 +77,6 @@ class MeetingData {
       );
 
   Map<String, dynamic> toJson() => {
-        "post_id": postId,
-        "title": title,
-        "content": content,
-        "author_nickname": authorNickname,
-        "author_nation": authorNation,
-        "author_picture": authorPicture,
-        "user_type": userType,
-        "meeting_capacity": meetingCapacity,
-        "meeting_pic": meetingPic,
-        "meeting_location": meetingLocation,
-        "meeting_start_time": meetingStartTime.toIso8601String(),
-        "like_count": likeCount,
         "like_check": likeCheck,
         "participantion_status": participantionStatus,
       };

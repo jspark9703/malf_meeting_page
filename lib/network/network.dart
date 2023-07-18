@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import "package:http/http.dart" as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import '../data/json_data.dart';
@@ -21,7 +23,23 @@ class Network {
       return JsonData(status: "404", data: []);
     }
   }
+
+  static void postinfo(Map<String, dynamic> data) async {
+    try {
+      await http.post(
+        Uri.parse('http://3.36.185.179:8000/bulletin-board/post/0'),
+        headers: <String, String>{
+          'Content-Type': 'meeting_page/json; charset=UTF-8',
+        },
+        body: jsonEncode(data),
+      );
+      Fluttertoast.showToast(msg: "good");
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+    }
+  }
 }
+
 
 // final dio = Dio();
 
